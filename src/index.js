@@ -3,100 +3,123 @@ const rimraf = require('rimraf');
 var fs = require('fs')
     , gm = require('gm').subClass({ imageMagick: true });
 
-const dirName = 'masha-2021-minsk';
-const inputDirPath = path.join(__dirname, `../assets/${dirName}`);
-const outputDir = path.join(__dirname, `../output`);
+const dirName = 'nastya 2021, Grodno';
 
+const dirPath = path.normalize('C:/Users/Dmitry Dreko/Downloads/файлы для сайта-20220706T194712Z-001/файлы для сайта/портфолио фото')
+const inputDirPath = path.join(dirPath, dirName);
+const outputDir = path.normalize('C:/Users/Dmitry Dreko/Documents/Projects/ritamazura-website-ng/src/assets/photos')
 const filenames = fs.readdirSync(inputDirPath);
+const rimrafPhotosPath = path.join(outputDir, `${dirName}/*.*`);
+const exactOutputDir = path.join(outputDir, dirName);
+const componentFileDir = path.join(__dirname, './../output', dirName)
+const rimrafComponentFilePath = path.join(__dirname, './../output', `${dirName}/*.*`)
 
-const quality = 90;
+const quality = 100;
 const mobileSize = 500;
 const desktopSize = 1000;
 
 
-rimraf(path.join(outputDir, `${dirName}/*.*`), (err) => {
+(async function () {
+    await rimrafAsync(rimrafPhotosPath);
+    await rimrafAsync(rimrafComponentFilePath);
 
-    if (err) {
-        console.error(err);
-        return;
-    }
+    await mkdirAsync(exactOutputDir);
+    await mkdirAsync(componentFileDir);
 
-    filenames.forEach(fileName => {
-
+    for (const fileName of filenames) {
         const [onlyFileName, extName] = path.basename(fileName).split('.');
         console.log(onlyFileName, extName);
 
         const imgPath = path.join(inputDirPath, `${onlyFileName}.${extName}`);
-        const exactOutputDir = path.join(outputDir, dirName);
-        console.log(exactOutputDir);
-
-        fs.mkdirSync(exactOutputDir, {
-            recursive: true,
-        }, (err) => {
-            if (err) {
-                throw err;
-            }
-        })
-
-        const result = [];
-        const forComponent = path.join(exactOutputDir, 'component.txt');
+        const forComponent = path.join(componentFileDir, 'component.txt');
+        const forComponentFilename = `${onlyFileName}-\${imageMode}.${extName}`;
 
         // mobile
         const mobileFileName = `${onlyFileName}-mobile.${extName}`;
-        const mobileFileNameTypescript = `${onlyFileName}-\${imageMode}.${extName}`;
         const mobileOutputPath = path.join(exactOutputDir, mobileFileName);
 
         // desktop
         const desktopFileName = `${onlyFileName}-desktop.${extName}`;
-        const desktopFileNameTypescript = `${onlyFileName}-\${imageMode}.${extName}`;
         const desktopOutputPath = path.join(exactOutputDir, desktopFileName);
 
+        await gmResizeAsync(imgPath, mobileSize, mobileOutputPath);
+        const mobileFileSize = await gmReadSizeAsyc(mobileOutputPath)
 
-        gm(imgPath)
-            .resize(mobileSize).quality(quality).write(mobileOutputPath, (err) => {
-                if (!err) {
+        await gmResizeAsync(imgPath, desktopSize, desktopOutputPath);
+        const desktopFileSize = await gmReadSizeAsyc(desktopOutputPath)
 
-                    console.log(`${fileName} mobile done`);
+        appendFileAsyc(forComponent, dirName, forComponentFilename, mobileFileSize, desktopFileSize)
+    }
 
-                    gm(mobileOutputPath).size((err, size) => {
-                        if (!err) {
-                            fs.appendFileSync(forComponent, `${JSON.stringify({
-                                url: `/assets/photos/${dirName}/${mobileFileNameTypescript}`,
-                                width: size.width,
-                                height: size.height,
-                                label: mobileFileNameTypescript
-                            })},`, { encoding: 'utf8' });
+})()
 
 
 
-                            // DESKTOP
-
-                            gm(imgPath)
-                                .resize(desktopSize).quality(quality).write(desktopOutputPath, (err) => {
-                                    if (!err) {
-
-                                        console.log(`${fileName} desktop done`);
-
-                                        gm(desktopOutputPath).size((err, size) => {
-                                            if (!err) {
-                                                fs.appendFileSync(forComponent, `${JSON.stringify({
-                                                    url: `/assets/photos/${dirName}/${desktopFileNameTypescript}`,
-                                                    width: size.width,
-                                                    height: size.height,
-                                                    label: desktopFileNameTypescript
-                                                })},`, { encoding: 'utf8' });
-                                            }
-
-                                        })
-                                    }
-                                })
-                        }
-                    })
-
-                }
-            })
-
+function gmResizeAsync(imgPath, mobileSize, path) {
+    return new Promise((resolve, reject) => {
+        gm(imgPath).resize(mobileSize).quality(quality).write(path, (err) => {
+            if (err) {
+                reject(err);
+            }
+            resolve();
+        })
     })
+}
 
 
-});
+function gmReadSizeAsyc(path) {
+    return new Promise((resolve, reject) => {
+        gm(path).size((err, size) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(size)
+        })
+    })
+}
+
+function appendFileAsyc(forComponent, dirName, fileNameTypescript, mobileSize, desktopSize) {
+    return new Promise((resolve, reject) => {
+        fs.appendFile(forComponent, `{
+            url: \`/assets/photos/${dirName}/${fileNameTypescript}\`,
+            sizes: {
+                mobile: { width: ${mobileSize.width}, height: ${mobileSize.height} },
+                desktop: { width: ${desktopSize.width}, height: ${desktopSize.height} }
+            }
+            label: \`${fileNameTypescript}\`
+        },`, { encoding: 'utf8' }, (err) => {
+            if (err) {
+                reject(err)
+            }
+
+            resolve()
+        });
+    })
+}
+
+function mkdirAsync(dirName) {
+    return new Promise((resolve, reject) => {
+        fs.mkdir(dirName, {
+            recursive: true,
+        }, (err, path) => {
+            if (err) {
+                reject(err);
+            }
+            resolve(path)
+        });
+    })
+}
+
+
+function rimrafAsync(path) {
+    return new Promise((resolve, reject) => {
+        rimraf(path, (err) => {
+            if (err) {
+                reject(err)
+            }
+            resolve()
+        })
+    })
+}
+
+
