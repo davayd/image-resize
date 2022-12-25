@@ -22,6 +22,7 @@ export const photoSessionMap = {
   PolinaStudio2: "Polina.Studio, part. 2",
   Anastasia: "Anastasia 12.2022. Model test",
   Miron: "Miron 12.2022. Model test",
+  Polina3: "Polina 10.2022. Model test",
 };
 
 export let parentDir;

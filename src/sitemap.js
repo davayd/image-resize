@@ -23,8 +23,11 @@ const siteMap = {
   7: {
     routePath: photoSessionMap.Anastasia,
   },
-  9: {
+  8: {
     routePath: photoSessionMap.Miron,
+  },
+  9: {
+    routePath: photoSessionMap.Polina3,
   },
 };
 
@@ -65,6 +68,9 @@ const teamMembersMap = {
   },
   [transliterator(photoSessionMap.Olya)]: {
     Model: ["Olya (instagram - olya_bonheur)"],
+  },
+  [transliterator(photoSessionMap.Polina3)]: {
+    Model: ["Polina (instagram - mdam_s)"],
   },
 };
 

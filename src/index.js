@@ -9,7 +9,12 @@ import {
   componenentDataFile,
   transliterateDirName,
   mode,
-} from "./constants";
+  exactOutputDir,
+  targetExt,
+  mobileSize,
+  quality,
+  desktopSize
+} from "./constants.js";
 import {
   appendFileAsyc,
   mkdirAsync,
@@ -17,7 +22,7 @@ import {
   gmResizeAsync,
   gmReadSizeAsyc,
   formatPhotoInfo,
-} from "./utils";
+} from "./utils.js";
 
 const filenames = readdirSync(inputDirPath)
   .filter((file) => {
@@ -68,10 +73,10 @@ const filenames = readdirSync(inputDirPath)
     const desktopOutputPath = join(exactOutputDir, desktopFileName);
 
     // resize
-    await gmResizeAsync(imgPath, mobileSize, mobileOutputPath);
+    await gmResizeAsync(imgPath, mobileSize, quality, mobileOutputPath);
     const mobileFileSize = await gmReadSizeAsyc(mobileOutputPath);
 
-    await gmResizeAsync(imgPath, desktopSize, desktopOutputPath);
+    await gmResizeAsync(imgPath, desktopSize, quality, desktopOutputPath);
     const desktopFileSize = await gmReadSizeAsyc(desktopOutputPath);
 
     const photoInfo = formatPhotoInfo(

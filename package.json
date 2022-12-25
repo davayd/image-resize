@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "sitemap": "node src/sitemap.js"
+    "sitemap": "node src/sitemap.js",
+    "all": "npm run start && npm run sitemap"
   },
   "author": "",
   "license": "ISC",

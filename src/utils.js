@@ -47,7 +47,7 @@ export function rimrafAsync(path) {
   });
 }
 
-export function gmResizeAsync(imgPath, mobileSize, path) {
+export function gmResizeAsync(imgPath, mobileSize, quality, path) {
   return new Promise((resolve, reject) => {
     gm(imgPath)
       .resize(mobileSize)
@@ -88,7 +88,6 @@ export function formatPhotoInfo(
     desktopSize.height
   } }
         },
-        label: \`${fileNameTypescript}\`,
-        ${dirName === "main" ? `sessionRoute: \`${transliterator()}\`` : ""}
+        label: \`${fileNameTypescript}\`
     },`;
 }
