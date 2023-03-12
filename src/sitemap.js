@@ -29,6 +29,12 @@ const siteMap = {
   9: {
     routePath: photoSessionMap.Polina3,
   },
+  10: {
+    routePath: photoSessionMap.Kate_02_2023
+  },
+  11: {
+    routePath: photoSessionMap.Lera_02_2023
+  }
 };
 
 const transliteratedSiteMap = Object.entries(siteMap).reduce(
@@ -71,6 +77,12 @@ const teamMembersMap = {
   },
   [transliterator(photoSessionMap.Polina3)]: {
     Model: ["Polina (instagram - mdam_s)"],
+  },
+  [transliterator(photoSessionMap.Kate_02_2023)]: {
+    Model: ["Kate (instagram - astngalien)"],
+  },
+  [transliterator(photoSessionMap.Lera_02_2023)]: {
+    Model: ["Kate (instagram - grannypocket)"],
   },
 };
 

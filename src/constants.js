@@ -5,9 +5,9 @@ import { fileURLToPath } from "url";
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export const retouchSessionMap = {
-  1: "beauty",
-  2: "commercial",
-  3: "course",
+  beauty: "beauty",
+  fashion: "fashion",
+  course: "course",
 };
 
 export const photoSessionMap = {
@@ -23,6 +23,8 @@ export const photoSessionMap = {
   Anastasia: "Anastasia 12.2022. Model test",
   Miron: "Miron 12.2022. Model test",
   Polina3: "Polina 10.2022. Model test",
+  Kate_02_2023: "Kate 02.2023",
+  Lera_02_2023: "Lera Yaskevich 02.2023",
 };
 
 export let parentDir;
@@ -34,19 +36,18 @@ if (mode === "photo") {
   parentDir = "портфолио ретушь";
 }
 
-export const dirName = photoSessionMap.Main;
+export const dirName = photoSessionMap.Main; // retouchSessionMap.beauty;
 
 export const targetExt = ".webp";
 
 export const dirPath = normalize(
   "C:/Users/Dmitry Dreko/Downloads/файлы для сайта-20220706T194712Z-001/файлы для сайта"
 );
-
-export const inputDirPath = join(dirPath, parentDir, dirName);
-
 export const outputDir = normalize(
   "C:/Users/Dmitry Dreko/Documents/Projects/ritamazura-website-ng/src/assets/photos"
 );
+
+export const inputDirPath = join(dirPath, parentDir, dirName);
 
 export const rimrafPhotosPath = join(outputDir, `${dirName}/*.*`);
 export const exactOutputDir = join(outputDir, dirName);
